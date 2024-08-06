@@ -9,8 +9,19 @@ mongoose
   });
 
 const userschema = mongoose.Schema({
-  name: String,
-  username: String,
-  email: String,
+  name: { type: String, required: true, trim: true },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+    lowercase: true,
+  },
+  password: { type: String, required: true, trim: true, minlength: 6 },
+  tokens: [
+    {
+      token: { type: String },
+    },
+  ],
 });
 module.exports = mongoose.model("user", userschema);

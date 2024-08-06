@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task Manager - Sign Up & Sign In</title>
+    <link rel="stylesheet" href="/stylesheet/styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <!-- Sign Up Form -->
+      <div class="form-container" id="signup-container">
+        <form id="signup-form" method="post" action="/createuser" class="form">
+          <h2>Sign Up</h2>
+          <input
+            type="text"
+            id="signup-username"
+            placeholder="Username"
+            name="name"
+            required
+          />
+          <input
+            type="email"
+            id="signup-email"
+            name="email"
+            placeholder="Email"
+            required
+          />
+          <input
+            type="password"
+            id="signup-password"
+            placeholder="Password"
+            name="password"
+            required
+          />
+          <button type="submit" style="background-color: rgb(84, 84, 239)">
+            Sign Up
+          </button>
+          <p>
+            Already have an account?
+            <a href="#" id="show-signin" style="color: rgb(84, 84, 239)"
+              >Sign In</a
+            >
+          </p>
+        </form>
+      </div>
+
+      <!-- Sign In Form -->
+      <div class="form-container" id="signin-container" style="display: none">
+        <form id="signin-form" action="/login" method="post" class="form">
+          <h2>Sign In</h2>
+          <input
+            type="email"
+            name="email"
+            id="signin-email"
+            placeholder="Email"
+            required
+          />
+          <input
+            type="password"
+            id="signin-password"
+            placeholder="Password"
+            name="password"
+            required
+          />
+          <button type="submit" style="background-color: rgb(84, 84, 239)">
+            Sign In
+          </button>
+          <p>
+            Don't have an account?
+            <a href="#" id="show-signup" style="color: rgb(84, 84, 239)"
+              >Sign Up</a
+            >
+          </p>
+        </form>
+      </div>
+    </div>
+
+    <script src="/script/script.js"></script>
+  </body>
+</html>
