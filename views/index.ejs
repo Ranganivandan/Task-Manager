@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task Manager</title>
+    <link rel="stylesheet" href="/stylesheet/style.css" />
+    <link
+      rel="icon"
+      href="https://cdn6.f-cdn.com/contestentries/134732/11485812/549932dff2efe_thumb900.jpg"
+      type="image/icon type"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-zinc-900 text-white">
+    <div class="main w-full min-h-screen flex flex-col items-center py-10">
+      <!-- Form -->
+      <div class="form mb-10">
+        <form
+          action="/create"
+          method="POST"
+          class="form p-5 bg-zinc-800 rounded-lg shadow-lg"
+        >
+          <input
+            type="text"
+            name="title"
+            class="block px-5 py-2 mb-4 w-full bg-zinc-700 text-white placeholder-gray-400 rounded-md"
+            placeholder="Title goes here"
+            required
+          />
+          <textarea
+            name="description"
+            class="block px-5 py-2 mb-4 w-full bg-zinc-700 text-white placeholder-gray-400 rounded-md resize-none"
+            placeholder="Write your task"
+            required
+          ></textarea>
+          <input
+            type="submit"
+            value="Create Task"
+            class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md cursor-pointer"
+          />
+        </form>
+      </div>
+
+      <div class="cards">
+        <% if (files.length > 0 ) { %> <% files.forEach(element => {%>
+        <div class="card bg-zinc-800 p-5 rounded-lg shadow-md">
+          <h1 class="text-xl font-semibold mb-2">
+            <% let x=element.split('.')%> <%=x[0]%>
+          </h1>
+          <div style="display: flex; justify-content: space-around">
+            <a class="text-blue-300" id="edit" href="/files/<%=element%> "
+              >Read More</a
+            >
+            <a class="text-blue-300" id="delete" href="/delete/<%=element%>"
+              >remove</a
+            >
+            <a class="text-blue-300" id="edit" href="/edit/<%=element%> "
+              >edit</a
+            >
+          </div>
+        </div>
+        <%})%> <%}else{%>
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+          "
+        >
+          <h3
+            class="text-center"
+            style="
+              background-color: rgb(62, 62, 62);
+              width: 15vh;
+              border-radius: 50px;
+            "
+          >
+            No yask yet
+          </h3>
+        </div>
+
+        <%}%>
+        <!-- 
+        <div class="card bg-zinc-800 p-5 rounded-lg shadow-md">
+          <h1 class="text-xl font-semibold mb-2">hello</h1>
+          <p class="text-blue-300" id="edit">Read More</p>
+        </div> -->
+      </div>
+    </div>
+  </body>
+</html>

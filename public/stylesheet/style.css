@@ -1,0 +1,52 @@
+/* Custom styles can be added here */
+body {
+    font-family: 'Arial', sans-serif;
+}
+
+.form input,
+.form textarea {
+    outline: none;
+}
+
+.form input::placeholder,
+.form textarea::placeholder {
+    color: #9ca3af;
+    /* Tailwind's gray-400 */
+}
+.cards{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    width: 90%;
+
+}
+.cards .card {
+    transition: transform 0.2s ease-in-out;
+    width: 20vw;
+
+}
+
+.cards .card:hover {
+    transform: scale(1.05);
+    cursor:pointer;
+}
+#edit:hover{
+text-decoration: underline;
+cursor: pointer;
+}
+.mains{
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+.mains >h1{
+  font-size: 30px;
+    float: left;
+    /* padding: 20px; */
+}
+.mains >p{
+    margin-top: 20px;
+    font-size: 20px;
+}
