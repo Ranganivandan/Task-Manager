@@ -1,0 +1,124 @@
+/* Basic Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+}
+
+/* Navbar Styles */
+.navbar {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 20px;
+}
+
+.navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar-logo {
+    font-size: 24px;
+    font-weight: bold;
+    text-decoration: none;
+    color: #fff;
+}
+
+.navbar-menu {
+    list-style: none;
+    display: flex;
+}
+
+.navbar-item {
+    margin-left: 20px;
+}
+
+.navbar-link {
+    text-decoration: none;
+    color: #fff;
+    font-size: 16px;
+    transition: color 0.3s;
+}
+
+.navbar-link:hover {
+    color: #ff8c00;
+}
+
+/* Main Content Styles */
+.main-content {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.main-content h1 {
+    margin-bottom: 20px;
+}
+
+.notes-section,
+.tasks-section {
+    margin-top: 40px;
+    text-align: left;
+}
+
+textarea,
+input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+}
+
+button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #ff8c00;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+li {
+    /* background-color: #f9f9f9; */
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+li button {
+    background-color: #e74c3c;
+    margin-top: 0;
+}
+
+li button:hover {
+    background-color: #c0392b;
+}

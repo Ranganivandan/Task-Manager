@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notes & Task Manager</title>
+    <link rel="stylesheet" href="../stylesheet/home.css" />
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="navbar-container">
+        <a href="#" class="navbar-logo">TaskManager</a>
+        <ul class="navbar-menu">
+          <li class="navbar-item"><a href="#" class="navbar-link">Home</a></li>
+
+          <li class="navbar-item">
+            <a href="/signup" class="navbar-link">Signup</a>
+          </li>
+          <li class="navbar-item">
+            <a href="/signup" class="navbar-link">Signin</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <h1>Welcome to Your Personal Task Manager</h1>
+      <p>Organize your notes and tasks efficiently.</p>
+
+      <!-- Notes Section -->
+      <div class="notes-section">
+        <h2>Your Notes</h2>
+        <textarea
+          id="note-input"
+          placeholder="Write your note here..."
+        ></textarea>
+        <button id="add-note-btn">Add Note</button>
+        <ul id="notes-list">
+          <!-- Notes will be added here dynamically -->
+        </ul>
+      </div>
+
+      <!-- Tasks Section -->
+      <div class="tasks-section">
+        <h2>Your Tasks</h2>
+        <input type="text" id="task-input" placeholder="Add a new task..." />
+        <button id="add-task-btn">Add Task</button>
+        <ul id="tasks-list">
+          <!-- Tasks will be added here dynamically -->
+        </ul>
+      </div>
+    </div>
+
+    <script src="../script/home.js"></script>
+  </body>
+</html>

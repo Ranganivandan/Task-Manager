@@ -28,7 +28,7 @@
       >
         <h2 style="font-size: 25px">Welcome, <%=names %></h2>
         <div style="display: flex; gap: 10px">
-          <a href="/signup">Sign up</a>
+          <!-- <a href="/signup">Sign up</a> -->
 
           <a href="/logout">Logout</a>
         </div>
@@ -65,18 +65,28 @@
 
       <div class="cards">
         <% if (files.length > 0 ) { %> <% files.forEach(element => {%>
+
         <div class="card bg-zinc-800 p-5 rounded-lg shadow-md">
           <h1 class="text-xl font-semibold mb-2">
             <% let x=element.split('.')%> <%=x[0]%>
           </h1>
           <div style="display: flex; justify-content: space-around">
-            <a class="text-blue-300" id="edit" href="/files/<%=element%> "
+            <a
+              class="text-blue-300"
+              id="edit"
+              href="/files/<%=username%>/<%=element%> "
               >Read More</a
             >
-            <a class="text-blue-300" id="delete" href="/delete/<%=element%>"
+            <a
+              class="text-blue-300"
+              id="delete"
+              href="/delete/<%=username%>/<%=element%>"
               >remove</a
             >
-            <a class="text-blue-300" id="edit" href="/edit/<%=element%> "
+            <a
+              class="text-blue-300"
+              id="edit"
+              href="/edit/<%=username%>/<%=element%> "
               >edit</a
             >
           </div>

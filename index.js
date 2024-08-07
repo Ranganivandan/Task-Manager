@@ -24,38 +24,51 @@ app.use(cookieParser());
 //     resave: true,
 //   })
 // );
-
 app.get("/", (req, res) => {
-  fs.readdir("./files", async function (err, files) {
-    // console.log(files);
-    const userdataCookie = req.cookies.userdata;
-    if (!userdataCookie) {
-      console.log("No cookies found");
-      return res.redirect("/signup"); // Redirect to login if cookie is not found
+  res.sendFile(path.join(__dirname, "public", "html", "home.html"));
+});
+console.log(__dirname);
+app.get("/index", async (req, res) => {
+  const userdataCookie = req.cookies.userdata;
+  const userId = userdataCookie._id;
+  const user = await usermodel.findOne({ _id: userId });
+  fs.readdir(
+    `./files/${user.name.split(" ").join("")}`,
+    async function (err, files) {
+      // console.log(files);
+      const userdataCookie = req.cookies.userdata;
+      if (!userdataCookie) {
+        console.log("No cookies found");
+        return res.redirect("/signup"); // Redirect to login if cookie is not found
+      }
+      const userId = userdataCookie._id;
+      const user = await usermodel.findOne({ _id: userId });
+      if (!user) {
+        console.log("User not found");
+        return res.redirect("/signup");
+      }
+      res.render("index", {
+        files: files,
+        names: user.name || "users", // Use "users" as default if user.name is not available
+        username: req.cookies.userdata.name.split(" ").join(""),
+      });
     }
-    const userId = userdataCookie._id;
-    const user = await usermodel.findOne({ _id: userId });
-    if (!user) {
-      console.log("User not found");
-      return res.redirect("/signup");
-    }
-    res.render("index", {
-      files: files,
-      names: user.name || "users", // Use "users" as default if user.name is not available
-    });
-  });
+  );
 });
 app.get("/logout", (req, res) => {
   res.clearCookie("userdata");
   res.redirect("/");
   console.log("signout");
 });
-app.get("/files/:filename", (req, res) => {
+app.get("/files/:username/:filename", (req, res) => {
   const filedata = fs.readFile(
-    `./files/${req.params.filename}`,
+    `./files/${req.params.username}/${req.params.filename}`,
     "utf-8",
     (err, filedata) => {
-      res.render("show", { filename: req.params.filename, filedata: filedata });
+      res.render("show", {
+        filename: req.params.filename,
+        filedata: filedata,
+      });
     }
   );
 });
@@ -69,6 +82,17 @@ app.post("/createuser", async (req, res) => {
     const existinuser = await usermodel.findOne({ email });
     if (!existinuser) {
       await usermodel.create({ name, email, password: hash });
+
+      const directoryname = fs.mkdir(
+        path.join(__dirname, "files", name.split(" ").join("")),
+        (err) => {
+          if (err) return console.log(err);
+          else {
+            console.log("directory created succesfully");
+          }
+        }
+      );
+
       res.redirect("/");
     } else {
       return res.status(400).send("<h1>User already exists</h1>");
@@ -93,16 +117,16 @@ app.post("/login", async (req, res) => {
           { _id: existinuser._id.toString() },
           "secretkey",
           {
-            expiresIn: "500000",
+            expiresIn: "2000000",
           }
         );
         // req.session.user = { name: existinuser.name };
         const cookies = res.cookie("userdata", existinuser, {
-          expires: new Date(Date.now() + 50000000),
+          expires: new Date(Date.now() + 20000000),
           httpOnly: true,
         });
         // console.log(cookies);
-        return res.redirect("/");
+        return res.redirect("/index");
       }
     }
   } catch (err) {
@@ -110,34 +134,63 @@ app.post("/login", async (req, res) => {
   }
 });
 
-// app.get("/*", (req, res) => {
-//   // console.log("render");
-//   res.render("notfound");
-// });
 app.post("/create", async (req, res) => {
   const { title, description } = req.body;
+  const paths = path.join(
+    __dirname,
+    "files",
+    req.cookies.userdata.name.split(" ").join("")
+  );
+  // if (paths) {
+  // const directoryname = fs.mkdir(
+  //   path.join(
+  //     __dirname,
+  //     "files",
+  //     req.cookies.userdata.name.split(" ").join("")
+  //   ),
+  //   (err) => {
+  //     if (err) return console.log(err);
+  //     else {
+  //       console.log("directory created succesfully");
+  //     }
+  //   }
+  // );
+  // }
+
   fs.writeFile(
-    `./files/${title.split(" ").join("")}.txt`,
+    `${paths}/${title.split(" ").join("")}.txt`,
     description,
     (err) => {}
   );
-  res.redirect("/");
+  res.redirect("/index");
 });
-app.get("/edit/:filename", (req, res) => {
+app.get("/edit/:username/:filename", (req, res) => {
   res.render("edit", { filename: req.params.filename });
 });
-app.post("/edit", (req, res) => {
-  console.log(req.body.newname);
+app.post("/edit", async (req, res) => {
+  const userdataCookie = req.cookies.userdata;
+  const userId = userdataCookie._id;
+  const user = await usermodel.findOne({ _id: userId });
+
   fs.rename(
-    `./files/${req.body.previous}`,
-    `./files/${req.body.newname.concat(".txt")}`,
+    `./files/${user.name.split(" ").join("")}/${req.body.previous}`,
+    `./files/${user.name.split(" ").join("")}/${req.body.newname.concat(
+      ".txt"
+    )}`,
     (err) => {}
   );
-  res.redirect("/");
+  res.redirect("/index");
 });
-app.get("/delete/:filename", (req, res) => {
-  fs.unlink(`./files/${req.params.filename}`, (err) => {});
+app.get("/delete/:username/:filename", async (req, res) => {
+  const userdataCookie = req.cookies.userdata;
+  const userId = userdataCookie._id;
+  const user = await usermodel.findOne({ _id: userId });
+
+  fs.unlink(
+    `./files/${user.name.split(" ").join("")}/${req.params.filename}`,
+    (err) => {}
+  );
   // res.send("delete succesfully");
-  res.redirect("/");
+  res.redirect("/index");
 });
 app.listen(4500);
