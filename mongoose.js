@@ -18,10 +18,6 @@ const userschema = mongoose.Schema({
     lowercase: true,
   },
   password: { type: String, required: true, trim: true, minlength: 6 },
-  tokens: [
-    {
-      token: { type: String },
-    },
-  ],
+  posts: [{ type: mongoose.Schema.Types.ObjectId, ref: "post" }],
 });
 module.exports = mongoose.model("user", userschema);

@@ -1,4 +1,5 @@
 const express = require("express");
+const Postmodel = require("./post");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const ejs = require("ejs");
@@ -12,6 +13,7 @@ app.use(express.json());
 const fs = require("fs");
 app.use(cookieParser());
 const { get } = require("http");
+const { profile } = require("console");
 app.use(express.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 const directory = app.use(express.static(path.join(__dirname, "views")));
@@ -29,34 +31,41 @@ app.get("/", (req, res) => {
 });
 console.log(__dirname);
 app.get("/index", async (req, res) => {
-  const userdataCookie = req.cookies.userdata;
-  const userId = userdataCookie._id;
-  const user = await usermodel.findOne({ _id: userId });
-  fs.readdir(
-    `./files/${user.name.split(" ").join("")}`,
-    async function (err, files) {
-      // console.log(files);
-      const userdataCookie = req.cookies.userdata;
-      if (!userdataCookie) {
-        console.log("No cookies found");
-        return res.redirect("/signup"); // Redirect to login if cookie is not found
+  try {
+    const userdataCookie = req.cookies.userdata;
+    const userId = userdataCookie._id;
+    const user = await usermodel.findOne({ _id: userId });
+    fs.readdir(
+      `./files/${user.name.split(" ").join("")}`,
+      async function (err, files) {
+        // console.log(files);
+        const userdataCookie = req.cookies.userdata;
+        if (!userdataCookie) {
+          console.log("No cookies found");
+          return res.redirect("/signup"); // Redirect to login if cookie is not found
+        }
+        const userId = userdataCookie._id;
+        const user = await usermodel.findOne({ _id: userId });
+        if (!user) {
+          console.log("User not found");
+          return res.redirect("/signup");
+        }
+        res.render("index", {
+          files: files,
+          names: user.name || "users", // Use "users" as default if user.name is not available
+          username: req.cookies.userdata.name.split(" ").join(""),
+        });
       }
-      const userId = userdataCookie._id;
-      const user = await usermodel.findOne({ _id: userId });
-      if (!user) {
-        console.log("User not found");
-        return res.redirect("/signup");
-      }
-      res.render("index", {
-        files: files,
-        names: user.name || "users", // Use "users" as default if user.name is not available
-        username: req.cookies.userdata.name.split(" ").join(""),
-      });
-    }
-  );
+    );
+  } catch (e) {
+    res.send(
+      "<h1>Sorry,we cant reach the site please first login and then try again</h1>"
+    );
+  }
 });
 app.get("/logout", (req, res) => {
   res.clearCookie("userdata");
+  res.clearCookie("token");
   res.redirect("/");
   console.log("signout");
 });
@@ -81,8 +90,14 @@ app.post("/createuser", async (req, res) => {
   try {
     const existinuser = await usermodel.findOne({ email });
     if (!existinuser) {
-      await usermodel.create({ name, email, password: hash });
-
+      const user = await usermodel.create({ name, email, password: hash });
+      const token = jwt.sign({ _id: user._id }, "userdata", {
+        expiresIn: "20000000",
+      });
+      const cookietoken = res.cookie("token", token, {
+        expires: new Date(Date.now() + 20000000),
+        httpOnly: true,
+      });
       const directoryname = fs.mkdir(
         path.join(__dirname, "files", name.split(" ").join("")),
         (err) => {
@@ -101,6 +116,16 @@ app.post("/createuser", async (req, res) => {
     res.send(err.message);
   }
 });
+function isLoggedin(req, res, next) {
+  const token = req.cookies.token; // Access the token from cookies
+
+  if (!token) {
+    return res.status(401).send("<h1>Please log in to access this page</h1>");
+  }
+
+  // Token exists, so proceed to the next middleware/route handler
+  next();
+}
 
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
@@ -113,15 +138,15 @@ app.post("/login", async (req, res) => {
       const verify = await bcrypt.compare(password, existinuser.password);
       if (!verify) res.send("<h1>Invalid login details</h1>");
       else {
-        const token = await jwt.sign(
-          { _id: existinuser._id.toString() },
-          "secretkey",
-          {
-            expiresIn: "2000000",
-          }
-        );
         // req.session.user = { name: existinuser.name };
         const cookies = res.cookie("userdata", existinuser, {
+          expires: new Date(Date.now() + 20000000),
+          httpOnly: true,
+        });
+        const token = jwt.sign({ _id: existinuser._id }, "userdata", {
+          expiresIn: "20000000",
+        });
+        const cookietoken = res.cookie("token", token, {
           expires: new Date(Date.now() + 20000000),
           httpOnly: true,
         });
@@ -133,6 +158,51 @@ app.post("/login", async (req, res) => {
     res.send(err.message);
   }
 });
+app.get("/posts", async (req, res) => {
+  const users = await usermodel.find({}).populate("posts");
+
+  res.render("allposts", { users });
+});
+
+app.get("/delete/:postid", async (req, res) => {
+  const { postid } = req.params;
+  const users = await usermodel.find({}).populate("posts");
+  const post = await Postmodel.findById(postid);
+  if (!post) {
+    return res.status(404).send("Post not found");
+  }
+
+  await Postmodel.findByIdAndDelete(post);
+  res.redirect("/profile");
+});
+
+app.get("/profile", isLoggedin, async (req, res) => {
+  let user = await usermodel
+    .findOne({ email: req.cookies.userdata.email })
+    .populate("posts");
+  console.log(user);
+  res.render("post", { user });
+});
+app.post("/post", isLoggedin, async (req, res) => {
+  const { content } = req.body;
+  let user = await usermodel.findOne({ email: req.cookies.userdata.email });
+  let post = await Postmodel.create({ user: user._id, content });
+  user.posts.push(post._id);
+  await user.save();
+  return res.redirect("/profile");
+});
+app.get("/posts", async (req, res) => {
+  try {
+    // Verify the token
+    const verifies = jwt.verify(req.cookies.token, "userdata");
+
+    // If verification succeeds, send a response
+    res.send("Hello, authenticated user!");
+  } catch (err) {
+    // If verification fails, send an error message
+    res.status(401).send("<h1>First login and then try again</h1>");
+  }
+});
 
 app.post("/create", async (req, res) => {
   const { title, description } = req.body;
@@ -141,21 +211,6 @@ app.post("/create", async (req, res) => {
     "files",
     req.cookies.userdata.name.split(" ").join("")
   );
-  // if (paths) {
-  // const directoryname = fs.mkdir(
-  //   path.join(
-  //     __dirname,
-  //     "files",
-  //     req.cookies.userdata.name.split(" ").join("")
-  //   ),
-  //   (err) => {
-  //     if (err) return console.log(err);
-  //     else {
-  //       console.log("directory created succesfully");
-  //     }
-  //   }
-  // );
-  // }
 
   fs.writeFile(
     `${paths}/${title.split(" ").join("")}.txt`,

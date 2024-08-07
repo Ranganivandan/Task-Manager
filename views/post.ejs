@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Profile</title>
+    <link rel="stylesheet" href="../stylesheet/post.css" />
+  </head>
+  <body>
+    <div class="container">
+      <!-- User Information -->
+      <div class="profile-header">
+        <img
+          src="https://via.placeholder.com/100"
+          alt="User Avatar"
+          class="profile-avatar"
+        />
+        <h1 class="profile-name"><%=user.name%></h1>
+        <p class="profile-bio">Web Developer | Tech Enthusiast | Blogger</p>
+      </div>
+
+      <!-- Daily Post Form -->
+      <div class="post-form">
+        <h2>Post Your Update</h2>
+        <form id="postForm" action="/post" method="post">
+          <textarea
+            name="content"
+            id="postContent"
+            placeholder="Write your daily update here..."
+            required
+          ></textarea>
+          <button type="submit">Post Update</button>
+        </form>
+      </div>
+
+      <!-- Posts Section -->
+      <div class="posts-section">
+        <h2>Daily Updates</h2>
+        <% user.posts.reverse().forEach((post) => { %>
+        <div class="post">
+          <p><strong>@<%= user.name %></strong>: <%= post.content %></p>
+          <div style="display: flex; justify-content: space-between">
+            <small
+              >Posted on <%= new Date(post.createdAt).toLocaleDateString()
+              %></small
+            >
+            <div style="display: flex; gap: 20px">
+              <span><a href="/edit/<%= post._id %>">Edit</a></span>
+              <span><a href="/delete/<%= post._id %>">delete</a></span>
+            </div>
+          </div>
+        </div>
+        <% }) %>
+
+        <!-- More posts can be dynamically added here -->
+      </div>
+    </div>
+
+    <!-- <script>
+      // JavaScript to handle form submission
+      document
+        .getElementById("postForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const content = document.getElementById("postContent").value;
+          const postsSection = document.querySelector(".posts-section");
+
+          // Create a new post element
+          const postElement = document.createElement("div");
+          postElement.classList.add("post");
+          postElement.innerHTML = `
+                <p><strong>John Doe:</strong> ${content}</p>
+                <small>Posted on ${new Date().toLocaleDateString()}</small>
+            `;
+
+          // Add the new post to the top of the posts section
+          postsSection.insertBefore(postElement, postsSection.firstChild);
+
+          // Clear the textarea
+          document.getElementById("postContent").value = "";
+        });
+    </script> -->
+  </body>
+</html>

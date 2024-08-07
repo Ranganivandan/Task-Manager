@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Community Page</title>
+    <link rel="stylesheet" href="../stylesheet/allposts.css" />
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header>
+      <div
+        class="container"
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        "
+      >
+        <div class="logo">
+          <h1>Community Hub</h1>
+        </div>
+        <nav>
+          <ul>
+            <li><a href="/">Home</a></li>
+
+            <li><a href="/posts">Posts</a></li>
+            <!-- <li><a href="#">Contact</a></li> -->
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <div class="container">
+        <section class="intro">
+          <h2>Welcome to Our Community!</h2>
+          <p>
+            Join the conversation, share your thoughts, and connect with others.
+          </p>
+        </section>
+
+        <section class="posts">
+          <h3>Recent Posts</h3>
+
+          <% users.reverse().forEach((user) => { %>
+          <div class="user-section">
+            <div class="all-posts">
+              <% user.posts.forEach((post) => { %>
+              <div class="post">
+                <h4 style="margin-top: 0">@<%= user.name %></h4>
+                <div class="post-content">
+                  <p><%= post.content %></p>
+                  <small
+                    >Posted on <%= new Date(post.createdAt).toLocaleDateString()
+                    %></small
+                  >
+                </div>
+              </div>
+              <% }) %>
+            </div>
+          </div>
+          <% }) %>
+        </section>
+
+        <section class="create-post">
+          <h3>Create a New Post</h3>
+          <form action="/post" method="POST">
+            <textarea
+              name="content"
+              placeholder="Write your post here..."
+              required
+            ></textarea>
+            <button type="submit">Post</button>
+          </form>
+        </section>
+      </div>
+    </main>
+
+    <aside>
+      <div class="container">
+        <section class="sidebar">
+          <h3>Recent Topics</h3>
+          <ul>
+            <li><a href="#">Topic 1</a></li>
+            <li><a href="#">Topic 2</a></li>
+            <li><a href="#">Topic 3</a></li>
+            <li><a href="#">Topic 4</a></li>
+          </ul>
+
+          <h3>Popular Members</h3>
+          <ul>
+            <li><a href="#">John Doe</a></li>
+            <li><a href="#">Jane Smith</a></li>
+            <li><a href="#">Alice Johnson</a></li>
+            <li><a href="#">Bob Brown</a></li>
+          </ul>
+        </section>
+      </div>
+    </aside>
+
+    <footer>
+      <div class="container">
+        <p>&copy; 2024 Community Hub. All rights reserved.</p>
+        <ul class="social-links">
+          <li><a href="#">Facebook</a></li>
+          <li><a href="#">Twitter</a></li>
+          <li><a href="#">Instagram</a></li>
+          <li><a href="#">LinkedIn</a></li>
+        </ul>
+      </div>
+    </footer>
+  </body>
+</html>
