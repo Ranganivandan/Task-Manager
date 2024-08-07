@@ -1,4 +1,5 @@
 const express = require("express");
+const multerconfilg = require("./utils/multer");
 const Postmodel = require("./post");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -63,6 +64,26 @@ app.get("/index", async (req, res) => {
     );
   }
 });
+app.post(
+  "/profileimg",
+  isLoggedin,
+  multerconfilg.single("image"),
+  async (req, res) => {
+    // console.log(req.file.filename);
+    const userId = req.cookies.userdata;
+
+    let user = await usermodel.findOne({ _id: userId._id });
+    // console.log(user[0].profilepic);
+    // console.log(req.file.filename);
+    user.profilepic = req.file.filename;
+    // console.log(user);
+    // console.log("User name:");
+    await user.save();
+    // console.log(result);
+    res.redirect("/profile");
+  }
+);
+
 app.get("/logout", (req, res) => {
   res.clearCookie("userdata");
   res.clearCookie("token");
@@ -180,7 +201,7 @@ app.get("/profile", isLoggedin, async (req, res) => {
   let user = await usermodel
     .findOne({ email: req.cookies.userdata.email })
     .populate("posts");
-  console.log(user);
+  console.log("User Profile Pic:", user.profilepic);
   res.render("post", { user });
 });
 app.post("/post", isLoggedin, async (req, res) => {

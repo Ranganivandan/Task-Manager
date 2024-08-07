@@ -9,16 +9,23 @@
   <body>
     <div class="container">
       <!-- User Information -->
-      <div class="profile-header">
-        <img
-          src="https://via.placeholder.com/100"
-          alt="User Avatar"
-          class="profile-avatar"
-        />
-        <h1 class="profile-name"><%=user.name%></h1>
-        <p class="profile-bio">Web Developer | Tech Enthusiast | Blogger</p>
-      </div>
+      <form enctype="multipart/form-data" action="/profileimg" method="post">
+        <div
+          class="profile-header"
+          style="display: flex; flex-direction: column; align-items: center"
+        >
+          <img
+            src="../images/<%= user.profilepic %>"
+            alt="User Avatar"
+            class="profile-avatar"
+          />
 
+          <input type="file" name="image" />
+          <input type="submit" value="upload" />
+          <h1 class="profile-name"><%=user.name%></h1>
+          <p class="profile-bio">Web Developer | Tech Enthusiast | Blogger</p>
+        </div>
+      </form>
       <!-- Daily Post Form -->
       <div class="post-form">
         <h2>Post Your Update</h2>
