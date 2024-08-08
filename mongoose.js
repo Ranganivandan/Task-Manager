@@ -21,7 +21,7 @@ const userschema = mongoose.Schema({
   posts: [{ type: mongoose.Schema.Types.ObjectId, ref: "post" }],
   profilepic: {
     type: String,
-    default: "default.jpg",
+    default: "https://via.placeholder.com/200",
   },
 });
 module.exports = mongoose.model("user", userschema);

@@ -83,7 +83,18 @@ app.post(
     res.redirect("/profile");
   }
 );
+app.get("/like/:id", isLoggedin, async (req, res) => {
+  const userId = req.cookies.userdata;
+  let post = await Postmodel.findOne({ _id: req.params.id }).populate("user");
+  if (post.likes.indexOf(userId._id) === -1) {
+    post.likes.push(userId._id);
+  } else {
+    post.likes.splice(post.likes.indexOf(userId._id), 1);
+  }
 
+  await post.save();
+  res.redirect("/posts");
+});
 app.get("/logout", (req, res) => {
   res.clearCookie("userdata");
   res.clearCookie("token");

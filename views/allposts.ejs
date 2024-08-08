@@ -46,19 +46,43 @@
 
         <section class="posts">
           <h3>Recent Posts</h3>
-
           <% users.reverse().forEach((user) => { %>
           <div class="user-section">
             <div class="all-posts">
-              <% user.posts.forEach((post) => { %>
+              <% user.posts.reverse().forEach((post) => { %>
               <div class="post">
-                <h4 style="margin-top: 0">@<%= user.name %></h4>
+                <!-- Display User Profile Picture and Name -->
+                <div style="display: flex; gap: 10px; text-align: center">
+                  <img
+                    src="../images/<%= user.profilepic %>"
+                    alt="User Avatar"
+                    class="profile-avatar"
+                    height="30px"
+                    width="30px"
+                    style="border-radius: 50px"
+                  />
+                  <h4 style="margin-top: 0">@<%= user.name %></h4>
+                </div>
+
+                <!-- Display Post Content -->
                 <div class="post-content">
-                  <p><%= post.content %></p>
-                  <small
-                    >Posted on <%= new Date(post.createdAt).toLocaleDateString()
-                    %></small
-                  >
+                  <p style="margin-left: 50px"><%= post.content %></p>
+                  <div style="display: flex; flex-direction: column">
+                    <span style="color: black"
+                      ><%=post.likes.length %> Like</span
+                    >
+                    <a style="padding: 5px" href="/like/<%= post._id %>"
+                      ><% if(post.likes.indexOf(user._id) == -1) {%>
+                      <span>Like</span>
+                      <% } else{ %>
+                      <span>Unlike</span>
+                      <%} %>
+                    </a>
+                    <small
+                      >Posted on <%= new
+                      Date(post.createdAt).toLocaleDateString() %></small
+                    >
+                  </div>
                 </div>
               </div>
               <% }) %>
